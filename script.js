@@ -64,10 +64,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Form Submission
+// Form Submission - Send via Email (Web3Forms)
 const contactForm = document.getElementById('contactForm');
 
-contactForm.addEventListener('submit', (e) => {
+contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Get form data
@@ -79,11 +79,58 @@ contactForm.addEventListener('submit', (e) => {
         amount: formData.get('amount')
     };
     
-    // Show success message (in a real application, you would send this to a server)
-    alert(`Thank you, ${data.name}! We've received your enquiry for ${getLoanTypeName(data.loanType)} of ₹${formatAmount(data.amount)}. Our team will contact you within 24 hours on ${data.mobile}.`);
+    // Disable submit button to prevent multiple submissions
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
     
-    // Reset form
-    contactForm.reset();
+    try {
+        // Prepare email data for Web3Forms
+        const emailData = {
+            access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Get free key from https://web3forms.com
+            subject: `New Loan Enquiry - ${getLoanTypeName(data.loanType)} from ${data.name}`,
+            from_name: "CrediNest Website",
+            to_email: "prasannavadk@gmail.com",
+            message: `New Loan Enquiry from CrediNest Website
+
+Customer Details:
+-------------------
+Name: ${data.name}
+Mobile Number: ${data.mobile}
+Loan Type: ${getLoanTypeName(data.loanType)}
+Loan Amount Required: ${formatAmount(data.amount)}
+
+Please contact this customer within 24 hours.`
+        };
+        
+        // Send email via Web3Forms API
+        const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(emailData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert(`Thank you, ${data.name}! Your enquiry has been sent successfully. Our team will contact you within 24 hours on ${data.mobile}.`);
+            contactForm.reset();
+        } else {
+            throw new Error('Failed to send email');
+        }
+        
+    } catch (error) {
+        console.error('Error sending email:', error);
+        alert('Sorry, there was an error sending your enquiry. Please call us at +91 70219 04923 or email directly at prasannavadk@gmail.com');
+    } finally {
+        // Re-enable submit button
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    }
 });
 
 // Helper function to get loan type name

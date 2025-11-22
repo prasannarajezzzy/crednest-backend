@@ -1,0 +1,21 @@
+# CredNest Backend Environment Configuration
+# Copy this content to a new file named ".env" in the backend folder
+
+# Server Configuration
+PORT=5000
+
+# MongoDB Atlas Configuration (Your Database)
+MONGODB_URI=mongodb+srv://crednesttech_db_user:JiayEGJwITsrAhIM@cluster0.heovopj.mongodb.net/CredNest?retryWrites=true&w=majority
+
+# JWT Secret for Authentication (Change this in production!)
+JWT_SECRET=CredNest-super-secret-jwt-key-2024-change-in-production
+
+# Default Admin Credentials
+ADMIN_EMAIL=admin@CredNest.com
+ADMIN_PASSWORD=admin123
+
+# CORS Configuration (Optional)
+FRONTEND_URL=http://localhost:3000
+
+# Node Environment
+NODE_ENV=development
