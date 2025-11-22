@@ -47,3 +47,4 @@ echo "   ADMIN_EMAIL=admin@crednest.com"
 echo "   ADMIN_PASSWORD=<change-this-password>"
 echo ""
 echo "🔗 Your app will be available at the URL provided by Railway"
+

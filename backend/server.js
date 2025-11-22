@@ -54,9 +54,13 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Handle 404
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+// Handle 404 - catch all unmatched routes
+app.all('*', (req, res) => {
+  res.status(404).json({ 
+    message: 'Route not found',
+    path: req.originalUrl,
+    method: req.method
+  });
 });
 
 const PORT = process.env.PORT || 5000;

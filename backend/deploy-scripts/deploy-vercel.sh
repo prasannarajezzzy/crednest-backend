@@ -58,3 +58,4 @@ echo "# Enter a secure password"
 echo ""
 echo "After setting variables, redeploy:"
 echo "vercel --prod"
+

@@ -621,3 +621,4 @@ curl https://your-backend-url.com/metrics
 ---
 
 **Remember:** Monitor your application continuously and set up alerts for critical metrics. Regular testing and monitoring will help you catch issues before they affect users!
+
