@@ -26,14 +26,67 @@ mongoose.connect(mongoURI, {
 app.use('/api/loan-applications', require('./routes/loanApplications'));
 app.use('/api/auth', require('./routes/auth'));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development'
-  });
+// Enhanced health check endpoint
+app.get('/health', async (req, res) => {
+  try {
+    const healthCheck = {
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: Math.floor(process.uptime()),
+      environment: process.env.NODE_ENV || 'development',
+      version: '1.0.0',
+      memory: {
+        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+        rss: Math.round(process.memoryUsage().rss / 1024 / 1024)
+      },
+      database: {
+        status: 'unknown',
+        connected: false
+      }
+    };
+
+    // Check database connection
+    if (mongoose.connection.readyState === 1) {
+      healthCheck.database.status = 'connected';
+      healthCheck.database.connected = true;
+    } else if (mongoose.connection.readyState === 2) {
+      healthCheck.database.status = 'connecting';
+      healthCheck.database.connected = false;
+    } else if (mongoose.connection.readyState === 0) {
+      healthCheck.database.status = 'disconnected';
+      healthCheck.database.connected = false;
+    }
+
+    // If database is not connected, return 503
+    if (!healthCheck.database.connected) {
+      healthCheck.status = 'ERROR';
+      return res.status(503).json(healthCheck);
+    }
+
+    res.status(200).json(healthCheck);
+  } catch (error) {
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      uptime: Math.floor(process.uptime())
+    });
+  }
+});
+
+// Simple health check for load balancers (faster response)
+app.get('/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
+// Readiness check (for Kubernetes/Docker)
+app.get('/ready', async (req, res) => {
+  if (mongoose.connection.readyState === 1) {
+    res.status(200).json({ status: 'ready' });
+  } else {
+    res.status(503).json({ status: 'not ready', database: 'disconnected' });
+  }
 });
 
 // Test route
@@ -55,7 +108,7 @@ app.use((err, req, res, next) => {
 });
 
 // Handle 404 - catch all unmatched routes
-app.all('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ 
     message: 'Route not found',
     path: req.originalUrl,

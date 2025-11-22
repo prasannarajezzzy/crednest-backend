@@ -4,20 +4,47 @@ const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
 
 async function healthCheck() {
   try {
-    console.log('🏥 Running health check...');
+    console.log('🏥 Running comprehensive health check...');
     
-    const response = await axios.get(`${BACKEND_URL}/health`);
+    // Test main health endpoint
+    const healthResponse = await axios.get(`${BACKEND_URL}/health`);
     
-    if (response.status === 200) {
-      console.log('✅ Health check passed');
-      console.log('📊 Status:', response.data);
-      return true;
+    if (healthResponse.status === 200) {
+      console.log('✅ Main health check passed');
+      console.log('📊 Health Status:', {
+        status: healthResponse.data.status,
+        uptime: `${healthResponse.data.uptime}s`,
+        memory: `${healthResponse.data.memory?.used}MB used`,
+        database: healthResponse.data.database?.status,
+        environment: healthResponse.data.environment
+      });
     } else {
-      console.log('❌ Health check failed - Status:', response.status);
+      console.log('❌ Health check failed - Status:', healthResponse.status);
       return false;
     }
+
+    // Test ping endpoint
+    const pingResponse = await axios.get(`${BACKEND_URL}/ping`);
+    if (pingResponse.status === 200 && pingResponse.data === 'pong') {
+      console.log('✅ Ping test passed');
+    } else {
+      console.log('⚠️  Ping test failed');
+    }
+
+    // Test readiness endpoint
+    const readyResponse = await axios.get(`${BACKEND_URL}/ready`);
+    if (readyResponse.status === 200) {
+      console.log('✅ Readiness check passed');
+    } else {
+      console.log('⚠️  Readiness check failed - Service not ready');
+    }
+
+    return true;
   } catch (error) {
     console.log('❌ Health check failed - Error:', error.message);
+    if (error.response) {
+      console.log('📊 Error details:', error.response.data);
+    }
     return false;
   }
 }
