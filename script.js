@@ -90,9 +90,9 @@ contactForm.addEventListener('submit', async (e) => {
         const emailData = {
             access_key: "YOUR_WEB3FORMS_ACCESS_KEY", // Get free key from https://web3forms.com
             subject: `New Loan Enquiry - ${getLoanTypeName(data.loanType)} from ${data.name}`,
-            from_name: "CrediNest Website",
+            from_name: "CredNest Website",
             to_email: "prasannavadk@gmail.com",
-            message: `New Loan Enquiry from CrediNest Website
+            message: `New Loan Enquiry from CredNest Website
 
 Customer Details:
 -------------------
@@ -277,5 +277,5 @@ if (amountInput) {
     });
 }
 
-console.log('CrediNest website loaded successfully! 🏠💼');
+console.log('CredNest website loaded successfully! 🏠💼');
 

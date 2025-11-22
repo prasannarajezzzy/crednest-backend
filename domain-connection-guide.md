@@ -1,4 +1,4 @@
-# Domain Connection Guide - CrediNest
+# Domain Connection Guide - CredNest
 
 ## Method 1: Domain from Hostinger (Recommended)
 

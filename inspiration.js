@@ -32,7 +32,7 @@ const Header = () => (
       <nav className="hidden lg:flex space-x-8 text-sm font-medium text-gray-600">
         <a href="#" className="hover:text-green-600">Loans</a>
         <a href="#" className="hover:text-green-600">Calculators</a>
-        <a href="#" className="hover:text-green-600">Resources</a>
+        {/* <a href="#" className="hover:text-green-600">Resources</a> */}
         <a href="#" className="hover:text-green-600">Partners</a>
       </nav>
       <div className="flex items-center space-x-4">
