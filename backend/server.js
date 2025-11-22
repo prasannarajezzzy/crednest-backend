@@ -15,45 +15,32 @@ app.use(express.json());
 // MongoDB Connection with improved settings for deployment platforms
 const mongoURI = process.env.MONGODB_URI || 'mongodb+srv://crednesttech_db_user:JiayEGJwITsrAhIM@cluster0.heovopj.mongodb.net/CredNest?retryWrites=true&w=majority&appName=CrediNest';
 
-// Enhanced connection options for better reliability
+// Simplified connection options for better compatibility
 const mongooseOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000, // 30 seconds (increased from default 10s)
   socketTimeoutMS: 45000, // 45 seconds
-  bufferMaxEntries: 0, // Disable mongoose buffering
-  bufferCommands: false, // Disable mongoose buffering
   maxPoolSize: 10, // Maintain up to 10 socket connections
-  minPoolSize: 5, // Maintain minimum 5 socket connections
-  maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
   family: 4, // Use IPv4, skip trying IPv6
 };
 
-// Connect with retry logic
-const connectWithRetry = () => {
-  console.log('Attempting to connect to MongoDB Atlas...');
-  mongoose.connect(mongoURI, mongooseOptions)
-    .then(() => {
-      console.log('✅ Successfully connected to MongoDB Atlas');
-      console.log('Database:', mongoose.connection.db.databaseName);
-    })
-    .catch((err) => {
-      console.error('❌ MongoDB connection error:', err.message);
-      console.log('🔄 Retrying connection in 5 seconds...');
-      setTimeout(connectWithRetry, 5000);
-    });
-};
-
-// Initial connection
-connectWithRetry();
+// Connect to MongoDB with simplified approach
+mongoose.connect(mongoURI, mongooseOptions)
+  .then(() => {
+    console.log('✅ Successfully connected to MongoDB Atlas');
+    console.log('Database:', mongoose.connection.db.databaseName);
+  })
+  .catch((err) => {
+    console.error('❌ MongoDB connection error:', err.message);
+    console.log('⚠️ Server will continue running, but database operations will fail');
+  });
 
 // Handle connection events
-mongoose.connection.on('disconnected', () => {
-  console.log('⚠️ MongoDB disconnected. Attempting to reconnect...');
+mongoose.connection.on('connected', () => {
+  console.log('✅ MongoDB connected successfully');
 });
 
-mongoose.connection.on('reconnected', () => {
-  console.log('✅ MongoDB reconnected successfully');
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️ MongoDB disconnected');
 });
 
 mongoose.connection.on('error', (err) => {
