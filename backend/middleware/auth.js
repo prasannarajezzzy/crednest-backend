@@ -29,10 +29,20 @@ module.exports = async (req, res, next) => {
     req.admin = decoded.admin;
     next();
   } catch (error) {
-    console.error('Auth middleware error:', error);
+    // Only log non-expiration errors to reduce noise
+    if (error.name !== 'TokenExpiredError') {
+      console.error('Auth middleware error:', error);
+    }
+    
+    // Provide more specific error message
+    const message = error.name === 'TokenExpiredError' 
+      ? 'Token expired, please login again'
+      : 'Token is not valid';
+    
     res.status(401).json({
       success: false,
-      message: 'Token is not valid'
+      message,
+      expired: error.name === 'TokenExpiredError'
     });
   }
 };

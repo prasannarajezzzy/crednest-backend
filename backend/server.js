@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const https = require('https');
+const http = require('http');
 
 // Load environment variables
 dotenv.config();
@@ -50,6 +52,7 @@ mongoose.connection.on('error', (err) => {
 // Routes
 app.use('/api/loan-applications', require('./routes/loanApplications'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/contact-queries', require('./routes/contactQueries'));
 
 // Enhanced health check endpoint
 app.get('/health', async (req, res) => {
@@ -147,4 +150,93 @@ const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
 app.listen(PORT, HOST, () => {
   console.log(`Server is running on ${HOST}:${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Start keepalive ping for Render free tier (prevents cold starts)
+  startKeepAlive();
 });
+
+// Keepalive function to ping the API every 10 minutes
+// This prevents Render free tier from spinning down the service
+function startKeepAlive() {
+  // Only run in production (when deployed)
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (!isProduction) {
+    console.log('⏭️  Keepalive disabled in development mode');
+    return;
+  }
+
+  // Get the API URL from environment variable or use default Render URL
+  const API_URL = process.env.API_URL || process.env.RENDER_EXTERNAL_URL || 'https://crednest-backend.onrender.com';
+  
+  // Extract hostname and path from URL
+  let url;
+  try {
+    url = new URL(API_URL);
+  } catch (error) {
+    console.error('❌ Invalid API URL for keepalive:', API_URL);
+    return;
+  }
+
+  const hostname = url.hostname;
+  const path = '/ping'; // Use the simple ping endpoint
+  const protocol = url.protocol === 'https:' ? https : http;
+  const port = url.port || (url.protocol === 'https:' ? 443 : 80);
+
+  console.log(`🔄 Keepalive started - pinging ${API_URL}${path} every 10 minutes`);
+
+  // Function to ping the API
+  const pingAPI = () => {
+    const options = {
+      hostname: hostname,
+      port: port,
+      path: path,
+      method: 'GET',
+      timeout: 10000, // 10 second timeout
+    };
+
+    const req = protocol.request(options, (res) => {
+      let data = '';
+      
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      
+      res.on('end', () => {
+        const timestamp = new Date().toISOString();
+        if (res.statusCode === 200) {
+          console.log(`✅ Keepalive ping successful at ${timestamp}`);
+        } else {
+          console.log(`⚠️  Keepalive ping returned status ${res.statusCode} at ${timestamp}`);
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      const timestamp = new Date().toISOString();
+      console.error(`❌ Keepalive ping failed at ${timestamp}:`, error.message);
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      const timestamp = new Date().toISOString();
+      console.error(`⏱️  Keepalive ping timeout at ${timestamp}`);
+    });
+
+    req.end();
+  };
+
+  // Ping immediately on startup (after 5 seconds to ensure server is ready)
+  setTimeout(() => {
+    console.log('🔄 Initial keepalive ping...');
+    pingAPI();
+  }, 5000);
+
+  // Then ping every 10 minutes (600,000 milliseconds)
+  const KEEPALIVE_INTERVAL = 10 * 60 * 1000; // 10 minutes
+  setInterval(() => {
+    pingAPI();
+  }, KEEPALIVE_INTERVAL);
+
+  console.log(`⏰ Keepalive interval set to ${KEEPALIVE_INTERVAL / 1000 / 60} minutes`);
+}
