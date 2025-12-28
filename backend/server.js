@@ -53,6 +53,7 @@ mongoose.connection.on('error', (err) => {
 app.use('/api/loan-applications', require('./routes/loanApplications'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/contact-queries', require('./routes/contactQueries'));
+app.use('/api/eligibility-queries', require('./routes/eligibilityQueries'));
 
 // Enhanced health check endpoint
 app.get('/health', async (req, res) => {
