@@ -1,0 +1,64 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/home-loan", "destination": "/products/secured-term-loans", "statusCode": 301 },
+    { "source": "/home-loans", "destination": "/products/secured-term-loans", "statusCode": 301 },
+    { "source": "/loan-against-property", "destination": "/products/secured-term-loans", "statusCode": 301 },
+    { "source": "/lap", "destination": "/products/secured-term-loans", "statusCode": 301 },
+    { "source": "/personal-loan", "destination": "/products", "statusCode": 301 },
+    { "source": "/personal-loans", "destination": "/products", "statusCode": 301 },
+    { "source": "/balance-transfer", "destination": "/products/structured-debt", "statusCode": 301 },
+    { "source": "/balance-transfer-calculator", "destination": "/products/structured-debt", "statusCode": 301 },
+    { "source": "/emi-calculator", "destination": "/funding-estimator", "statusCode": 301 },
+    { "source": "/loan-calculator", "destination": "/funding-estimator", "statusCode": 301 },
+    { "source": "/business-loan", "destination": "/products/working-capital-financing", "statusCode": 301 },
+    { "source": "/business-loans", "destination": "/products/working-capital-financing", "statusCode": 301 },
+    { "source": "/msme-loan", "destination": "/products/working-capital-financing", "statusCode": 301 },
+    { "source": "/msme-loans", "destination": "/products/working-capital-financing", "statusCode": 301 },
+    { "source": "/project-funding", "destination": "/products/structured-debt", "statusCode": 301 },
+    { "source": "/trade-finance", "destination": "/products/invoice-financing", "statusCode": 301 },
+    { "source": "/education-loan", "destination": "/products", "statusCode": 301 },
+    { "source": "/education-loans", "destination": "/products", "statusCode": 301 },
+    { "source": "/blog/1", "destination": "/products/secured-term-loans", "statusCode": 301 },
+    { "source": "/blog/2", "destination": "/products/structured-debt", "statusCode": 301 },
+    { "source": "/blog/3", "destination": "/products/secured-term-loans", "statusCode": 301 }
+  ],
+  "headers": [
+    {
+      "source": "/admin(.*)",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/login",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/terms",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/privacy",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/blog",
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ],
+  "rewrites": [
+    { "source": "/products/:slug", "destination": "/products/:slug/index.html" },
+    { "source": "/products", "destination": "/products/index.html" },
+    { "source": "/funding-estimator", "destination": "/funding-estimator/index.html" },
+    { "source": "/technology", "destination": "/technology/index.html" },
+    { "source": "/capital-partners", "destination": "/capital-partners/index.html" },
+    { "source": "/about", "destination": "/about/index.html" },
+    { "source": "/contact", "destination": "/contact/index.html" },
+    { "source": "/faq", "destination": "/faq/index.html" },
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/login", "destination": "/login/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/terms", "destination": "/terms/index.html" },
+    { "source": "/privacy", "destination": "/privacy/index.html" }
+  ]
+}

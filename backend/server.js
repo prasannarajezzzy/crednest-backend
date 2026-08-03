@@ -10,8 +10,41 @@ dotenv.config();
 
 const app = express();
 
+// Enhanced CORS configuration for better cross-region support
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+
+    // List of allowed origins
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'https://www.credinest.io',
+      'https://credinest.io',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+
+    // Check if origin is allowed
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('localhost')) {
+      callback(null, true);
+    } else {
+      // For debugging: log blocked origins
+      console.log('CORS blocked origin:', origin);
+      callback(null, true); // Allow all for now, change to false in production if needed
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 86400, // 24 hours
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB Connection with improved settings for deployment platforms

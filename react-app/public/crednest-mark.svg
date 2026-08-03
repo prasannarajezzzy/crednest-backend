@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">CredNest mark</title>
+  <rect width="64" height="64" rx="18" fill="#b8ff5a"/>
+  <g fill="none" stroke="#07150f" stroke-linecap="round">
+    <circle cx="32" cy="32" r="18" stroke-width="4.6" pathLength="100" stroke-dasharray="76 24" stroke-dashoffset="-12"/>
+    <circle cx="32" cy="32" r="12.2" stroke-width="4.2" pathLength="100" stroke-dasharray="72 28" stroke-dashoffset="-14" transform="rotate(12 32 32)"/>
+    <circle cx="32" cy="32" r="6.6" stroke-width="3.8" pathLength="100" stroke-dasharray="66 34" stroke-dashoffset="-17" transform="rotate(-14 32 32)"/>
+  </g>
+</svg>

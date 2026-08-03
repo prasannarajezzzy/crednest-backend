@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07150f" />
+    <meta name="author" content="CredNest" />
+    <meta name="geo.region" content="IN" />
+    <link rel="icon" type="image/svg+xml" href="/crednest-mark.svg" />
+    <!--seo-head-->
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <!--
+      Netlify Forms detection stub. The build bot scans deployed HTML for this and
+      registers the form and its fields; the React forms then POST to it. Every field
+      any lead form can send must be declared here or Netlify discards it.
+      Active only when VITE_LEAD_MODE=netlify; harmless and hidden otherwise.
+    -->
+    <form name="crednest-lead" data-netlify="true" data-netlify-honeypot="website" hidden>
+      <input type="text" name="source" />
+      <input type="text" name="name" />
+      <input type="text" name="company" />
+      <input type="tel" name="phone" />
+      <input type="email" name="email" />
+      <input type="text" name="revenue" />
+      <input type="text" name="fundingNeed" />
+      <textarea name="message"></textarea>
+      <input type="text" name="metadata" />
+      <input type="text" name="website" />
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

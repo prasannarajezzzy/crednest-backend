@@ -1,0 +1,30 @@
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  Options -MultiViews
+
+  RewriteRule ^home-loans?/?$ /products/secured-term-loans [R=301,L,NE]
+  RewriteRule ^(loan-against-property|lap)/?$ /products/secured-term-loans [R=301,L,NE]
+  RewriteRule ^personal-loans?/?$ /products [R=301,L,NE]
+  RewriteRule ^balance-transfer(-calculator)?/?$ /products/structured-debt [R=301,L,NE]
+  RewriteRule ^(emi-calculator|loan-calculator)/?$ /funding-estimator [R=301,L,NE]
+  RewriteRule ^business-loans?/?$ /products/working-capital-financing [R=301,L,NE]
+  RewriteRule ^msme-loans?/?$ /products/working-capital-financing [R=301,L,NE]
+  RewriteRule ^project-funding/?$ /products/structured-debt [R=301,L,NE]
+  RewriteRule ^trade-finance/?$ /products/invoice-financing [R=301,L,NE]
+  RewriteRule ^education-loans?/?$ /products [R=301,L,NE]
+  RewriteRule ^blog/1/?$ /products/secured-term-loans [R=301,L,NE]
+  RewriteRule ^blog/2/?$ /products/structured-debt [R=301,L,NE]
+  RewriteRule ^blog/3/?$ /products/secured-term-loans [R=301,L,NE]
+
+  # Keep the canonical route format slashless, including on Apache hosts.
+  RewriteCond %{THE_REQUEST} \s/+(.+?)/[?\s] [NC]
+  RewriteRule ^(.+)/$ /$1 [R=301,L,NE]
+
+  # Serve each prerendered route without exposing its /index.html file.
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^(.+)$ $1/index.html [L]
+</IfModule>
